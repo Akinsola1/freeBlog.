@@ -4,17 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:free_blog/resources/provider.dart';
 import 'package:free_blog/screens/homeScreen.dart';
 import 'package:free_blog/screens/loginscreen.dart';
+import 'package:free_blog/secretKeys.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       options: const FirebaseOptions(
-          apiKey: "AIzaSyC3oK59Y9jjSDtMQ7kNbI9m6DY2N34ZZOU",
-          appId: "1:179032654173:web:1fdfe76f590b36943fa8b4",
-          messagingSenderId: "179032654173",
-          projectId: "freeblog-e25b0",
-          storageBucket: 'freeblog-e25b0.appspot.com'));
+          apiKey: SecretKeys.apiKey,
+          appId: SecretKeys.appId,
+          messagingSenderId: SecretKeys.messagingSenderId,
+          projectId: SecretKeys.projectId,
+          storageBucket: SecretKeys.storageBucket));
   runApp(const MyApp());
 }
 
