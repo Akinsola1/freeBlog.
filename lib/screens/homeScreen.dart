@@ -8,6 +8,7 @@ import 'package:free_blog/screens/drawer.dart';
 import 'package:free_blog/screens/loginscreen.dart';
 import 'package:free_blog/style/appColors.dart';
 import 'package:free_blog/style/appFonts.dart';
+import 'package:free_blog/utils/screenDetector.dart';
 import 'package:free_blog/widget/postWidget.dart';
 import 'package:provider/provider.dart';
 import 'drawer.dart';
@@ -38,57 +39,64 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).getUser;
+    Size size = MediaQuery.of(context).size;
 
     return Scaffold(
       key: scaffoldKey,
       endDrawer: Drawer(
         child: DrawerItem(),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Center(
+        child: SizedBox(
+          width: screenDetector.isMobile(context) ? size.width : size.width / 2,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            child: Column(
               children: [
-                Text(
-                  "freeBlog.",
-                  style: AppFonts.header,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "freeBlog.",
+                      style: AppFonts.header,
+                    ),
+                    Spacer(),
+                    IconButton(
+                        onPressed: () {
+                          scaffoldKey.currentState!.openEndDrawer();
+                        },
+                        icon: Icon(
+                          Icons.menu,
+                          color: AppColors.primaryColor,
+                        ))
+                  ],
                 ),
-                Spacer(),
-                IconButton(
-                    onPressed: () {
-                      scaffoldKey.currentState!.openEndDrawer();
-                    },
-                    icon: Icon(
-                      Icons.menu,
-                      color: AppColors.primaryColor,
-                    ))
+                StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection('posts')
+                        .snapshots(),
+                    builder: (context,
+                        AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                            snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (ctx, index) => PostWidget(
+                            snap: snapshot.data!.docs[index].data(),
+                          ),
+                        );
+                      } else
+                        return Text("Error loading content");
+                    }),
               ],
             ),
-            StreamBuilder(
-                stream:
-                    FirebaseFirestore.instance.collection('posts').snapshots(),
-                builder: (context,
-                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                        snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (ctx, index) => PostWidget(
-                        snap: snapshot.data!.docs[index].data(),
-                      ),
-                    );
-                  } else
-                    return Text("Error loading content");
-                }),
-          ],
+          ),
         ),
       ),
     );

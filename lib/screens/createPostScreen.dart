@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:free_blog/resources/post.dart';
 import 'package:free_blog/screens/homeScreen.dart';
 import 'package:free_blog/style/appColors.dart';
+import 'package:free_blog/utils/screenDetector.dart';
 import 'package:free_blog/utils/utils.dart';
 import 'package:free_blog/widget/customButton.dart';
 import 'package:provider/provider.dart';
@@ -69,69 +70,75 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).getUser;
+    Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-        child: ListView(
-          children: [
-            TextFormField(
-              controller: titleController,
-              style: AppFonts.header.copyWith(color: AppColors.primaryColor),
-              cursorColor: Colors.white,
-              decoration: InputDecoration.collapsed(
-                  hintText: 'Title',
-                  hintStyle: AppFonts.header
-                      .copyWith(color: Colors.white.withOpacity(0.5))),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              controller: descriptionController,
-              maxLines: 2,
-              maxLength: 100,
-              style: AppFonts.header.copyWith(
-                  color: AppColors.primaryColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.normal),
-              cursorColor: Colors.white,
-              decoration: InputDecoration.collapsed(
-                  hintText: 'Short Description',
-                  hintStyle: AppFonts.header.copyWith(
-                      color: Colors.white.withOpacity(0.5),
+      body: Center(
+        child: SizedBox(
+          width: screenDetector.isMobile(context) ? size.width : size.width / 2,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            child: ListView(
+              children: [
+                TextFormField(
+                  controller: titleController,
+                  style: AppFonts.header.copyWith(color: AppColors.primaryColor),
+                  cursorColor: Colors.white,
+                  decoration: InputDecoration.collapsed(
+                      hintText: 'Title',
+                      hintStyle: AppFonts.header
+                          .copyWith(color: Colors.white.withOpacity(0.5))),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  controller: descriptionController,
+                  maxLines: 2,
+                  maxLength: 100,
+                  style: AppFonts.header.copyWith(
+                      color: AppColors.primaryColor,
                       fontSize: 16,
-                      fontWeight: FontWeight.normal)),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              controller: contentController,
-              maxLines: 20,
-              style: AppFonts.header.copyWith(
-                  color: AppColors.primaryColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.normal),
-              cursorColor: Colors.white,
-              decoration: InputDecoration.collapsed(
-                  hintText: "What's happening",
-                  hintStyle: AppFonts.header.copyWith(
-                      color: Colors.white.withOpacity(0.5),
+                      fontWeight: FontWeight.normal),
+                  cursorColor: Colors.white,
+                  decoration: InputDecoration.collapsed(
+                      hintText: 'Short Description',
+                      hintStyle: AppFonts.header.copyWith(
+                          color: Colors.white.withOpacity(0.5),
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal)),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  controller: contentController,
+                  maxLines: 20,
+                  style: AppFonts.header.copyWith(
+                      color: AppColors.primaryColor,
                       fontSize: 16,
-                      fontWeight: FontWeight.normal)),
+                      fontWeight: FontWeight.normal),
+                  cursorColor: Colors.white,
+                  decoration: InputDecoration.collapsed(
+                      hintText: "What's happening",
+                      hintStyle: AppFonts.header.copyWith(
+                          color: Colors.white.withOpacity(0.5),
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal)),
+                ),
+                CustomButton(
+                    loading: loading,
+                    onTap: () {
+                      postContent(user.uid, user.username, user.photoUrl);
+                    },
+                    label: "Post"),
+                const SizedBox(
+                  height: 20,
+                ),
+                CustomButton(onTap: () {}, label: "Post Anonymously"),
+              ],
             ),
-            CustomButton(
-                loading: loading,
-                onTap: () {
-                  postContent(user.uid, user.username, user.photoUrl);
-                },
-                label: "Post"),
-            const SizedBox(
-              height: 20,
-            ),
-            CustomButton(onTap: () {}, label: "Post Anonymously"),
-          ],
+          ),
         ),
       ),
     );
