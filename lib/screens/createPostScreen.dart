@@ -25,7 +25,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   var contentController = TextEditingController();
   bool loading = false;
 
-  void postImage(String uid, String username, String profImage) async {
+  void postContent(String uid, String username, String profImage) async {
     setState(() {
       loading = true;
     });
@@ -124,7 +124,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             CustomButton(
                 loading: loading,
                 onTap: () {
-                  postImage(user.uid, user.username, user.photoUrl);
+                  postContent(user.uid, user.username, user.photoUrl);
                 },
                 label: "Post"),
             const SizedBox(

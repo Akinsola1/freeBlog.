@@ -5,6 +5,7 @@ import 'package:free_blog/resources/authMethod.dart';
 import 'package:free_blog/screens/homeScreen.dart';
 import 'package:free_blog/screens/signUpScreen.dart';
 import 'package:free_blog/style/appFonts.dart';
+import 'package:free_blog/utils/screenDetector.dart';
 import 'package:free_blog/widget/customButton.dart';
 import 'package:free_blog/widget/customForm.dart';
 
@@ -47,51 +48,57 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        child: ListView(children: [
-          const Center(
-            child: Text(
-              "freeBlog.",
-              style: AppFonts.header,
-            ),
+      body: Center(
+        child: SizedBox(
+          width: screenDetector.isMobile(context) ? size.width : size.width / 2,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            child: ListView(children: [
+              const Center(
+                child: Text(
+                  "freeBlog.",
+                  style: AppFonts.header,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              CustomTextField(
+                controller: _emailController,
+                hintText: "Email",
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              CustomTextField(
+                controller: _passwordController,
+                hintText: "Password",
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              CustomButton(
+                  loading: _loading,
+                  onTap: () {
+                    loginUser();
+                  },
+                  label: "Login"),
+              const SizedBox(
+                height: 10,
+              ),
+              Center(
+                child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const SignUpScreen()));
+                    },
+                    child: const Text("New to freeBlog.? SignUp")),
+              )
+            ]),
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          CustomTextField(
-            controller: _emailController,
-            hintText: "Email",
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          CustomTextField(
-            controller: _passwordController,
-            hintText: "Password",
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          CustomButton(
-              loading: _loading,
-              onTap: () {
-                loginUser();
-              },
-              label: "Login"),
-          const SizedBox(
-            height: 10,
-          ),
-          Center(
-            child: InkWell(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const SignUpScreen()));
-                },
-                child: const Text("New to freeBlog.? SignUp")),
-          )
-        ]),
+        ),
       ),
     );
   }

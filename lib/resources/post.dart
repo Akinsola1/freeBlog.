@@ -20,7 +20,7 @@ class PostMethod {
         profImage: profileImage,
         postContent: postContent,
         postDescription: postDescription,
-        postTitle: postDescription,
+        postTitle: postTitle,
       );
       firestore.collection('posts').doc(postId).set(post.toJson());
       res = "success";
