@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     await Provider.of<UserProvider>(context, listen: false);
                 user.refreshUser();
               },
-              child: ListView(
+              child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -91,11 +91,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         }
                         if (snapshot.hasData) {
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: snapshot.data!.docs.length,
-                            itemBuilder: (ctx, index) => PostWidget(
-                              snap: snapshot.data!.docs[index].data(),
+                          return Expanded(
+                            child: ListView.builder(
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: (ctx, index) => PostWidget(
+                                snap: snapshot.data!.docs[index].data(),
+                              ),
                             ),
                           );
                         } else
