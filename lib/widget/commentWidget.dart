@@ -49,49 +49,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                 style: AppFonts.bodyBlack,
               ),
             ),
-            // ListView.builder(itemBuilder: itemBuilder)
-            StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('posts')
-                    .doc(widget.snap["postId"])
-                    .collection("comments")
-                    .orderBy("datePublished", descending: true)
-                    .snapshots(),
-                builder: (context,
-                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                        snapshot) {
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: IndividualCommentWidget(
-                              snap: snapshot.data!.docs.elementAt(index).data(),
-                            ),
-                          );
-                        });
-                  }
-                  // if (snapshot.data!.docs.isEmpty) {
-                  //   Center(
-                  //     child: Text(
-                  //       "Be the first to comment 🫵 ",
-                  //       style: AppFonts.bodyBlack,
-                  //     ),
-                  //   );
-                  // }
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else
-                    return Text("Error loading comment");
-                }),
-
-            Spacer(),
-
-            Row(
+             Row(
               children: [
                 Container(
                   height: 40,
@@ -157,7 +115,48 @@ class _CommentWidgetState extends State<CommentWidget> {
                         ),
                 ),
               ],
-            )
+            ),
+
+            Divider(),
+            // ListView.builder(itemBuilder: itemBuilder)
+            StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('posts')
+                    .doc(widget.snap["postId"])
+                    .collection("comments")
+                    .orderBy("datePublished", descending: true)
+                    .snapshots(),
+                builder: (context,
+                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                        snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: IndividualCommentWidget(
+                              snap: snapshot.data!.docs.elementAt(index).data(),
+                            ),
+                          );
+                        });
+                  }
+                  // if (snapshot.data!.docs.isEmpty) {
+                  //   Center(
+                  //     child: Text(
+                  //       "Be the first to comment 🫵 ",
+                  //       style: AppFonts.bodyBlack,
+                  //     ),
+                  //   );
+                  // }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else
+                    return Text("Error loading comment");
+                }),
           ],
         ),
       ),

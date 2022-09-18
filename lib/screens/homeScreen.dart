@@ -51,50 +51,58 @@ class _HomeScreenState extends State<HomeScreen> {
           width: screenDetector.isMobile(context) ? size.width : size.width / 2,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "freeBlog.",
-                      style: AppFonts.header,
-                    ),
-                    Spacer(),
-                    IconButton(
-                        onPressed: () {
-                          scaffoldKey.currentState!.openEndDrawer();
-                        },
-                        icon: Icon(
-                          Icons.menu,
-                          color: AppColors.primaryColor,
-                        ))
-                  ],
-                ),
-                StreamBuilder(
-                    stream: FirebaseFirestore.instance
-                        .collection('posts')
-                        .snapshots(),
-                    builder: (context,
-                        AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                            snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      if (snapshot.hasData) {
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (ctx, index) => PostWidget(
-                            snap: snapshot.data!.docs[index].data(),
-                          ),
-                        );
-                      } else
-                        return Text("Error loading content");
-                    }),
-              ],
+            child: RefreshIndicator(
+              onRefresh: () async {
+                UserProvider user =
+                    await Provider.of<UserProvider>(context, listen: false);
+                user.refreshUser();
+              },
+              child: ListView(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "freeBlog.",
+                        style: AppFonts.header,
+                      ),
+                      Spacer(),
+                      IconButton(
+                          onPressed: () {
+                            scaffoldKey.currentState!.openEndDrawer();
+                          },
+                          icon: Icon(
+                            Icons.menu,
+                            color: AppColors.primaryColor,
+                          ))
+                    ],
+                  ),
+                  StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('posts')
+                          .snapshots(),
+                      builder: (context,
+                          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                              snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (ctx, index) => PostWidget(
+                              snap: snapshot.data!.docs[index].data(),
+                            ),
+                          );
+                        } else
+                          return Text("Error loading content");
+                      }),
+                ],
+              ),
             ),
           ),
         ),
