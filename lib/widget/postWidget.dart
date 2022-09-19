@@ -92,39 +92,41 @@ class _PostWidgetState extends State<PostWidget> {
                   ],
                 ),
                 Spacer(),
-                IconButton(
-                    onPressed: () {
-                      showDialog(
-                          useRootNavigator: false,
-                          context: context,
-                          builder: (context) {
-                            return Dialog(
-                              child: ListView(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 16),
-                                  shrinkWrap: true,
-                                  children: [
-                                    'Delete',
-                                  ]
-                                      .map(
-                                        (e) => InkWell(
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
+                widget.snap['uid'].toString() == user.uid
+                    ? IconButton(
+                        onPressed: () {
+                          showDialog(
+                              useRootNavigator: false,
+                              context: context,
+                              builder: (context) {
+                                return Dialog(
+                                  child: ListView(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 16),
+                                      shrinkWrap: true,
+                                      children: [
+                                        'Delete',
+                                      ]
+                                          .map(
+                                            (e) => InkWell(
+                                                child: Container(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
                                                       vertical: 12,
                                                       horizontal: 16),
-                                              child: Text(e),
-                                            ),
-                                            onTap: () {}),
-                                      )
-                                      .toList()),
-                            );
-                          });
-                    },
-                    icon: Icon(
-                      Icons.more_vert,
-                      color: AppColors.primaryColor,
-                    ))
+                                                  child: Text(e),
+                                                ),
+                                                onTap: () {}),
+                                          )
+                                          .toList()),
+                                );
+                              });
+                        },
+                        icon: Icon(
+                          Icons.more_vert,
+                          color: AppColors.primaryColor,
+                        ))
+                    : Container()
               ],
             ),
             const SizedBox(

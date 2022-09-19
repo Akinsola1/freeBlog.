@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'freeBlog.',
         theme: ThemeData.dark(),
         home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),

@@ -7,6 +7,7 @@ import 'package:free_blog/resources/post.dart';
 import 'package:free_blog/resources/provider.dart';
 import 'package:free_blog/style/appColors.dart';
 import 'package:free_blog/style/appFonts.dart';
+import 'package:free_blog/utils/screenDetector.dart';
 import 'package:free_blog/widget/individualCommentWidget.dart';
 import 'package:provider/provider.dart';
 import 'package:free_blog/models/userModel.dart' as model;
@@ -35,129 +36,135 @@ class _CommentWidgetState extends State<CommentWidget> {
   @override
   Widget build(BuildContext context) {
     final model.User user = Provider.of<UserProvider>(context).getUser;
-
+    Size size = MediaQuery.of(context).size;
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Center(
-              child: Text(
-                "Comments",
-                style: AppFonts.bodyBlack,
+        child: SizedBox(
+          width: screenDetector.isMobile(context) ? size.width : size.width / 2,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Text(
+                  "Comments",
+                  style: AppFonts.bodyBlack,
+                ),
               ),
-            ),
-             Row(
-              children: [
-                Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: NetworkImage(user.photoUrl),
-                          fit: BoxFit.cover)),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: TextFormField(
-                    controller: commentController,
-                    maxLines: 2,
-                    style: AppFonts.bodyBlack.copyWith(
-                        color: AppColors.primaryColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.normal),
-                    cursorColor: Colors.white,
-                    decoration: InputDecoration.collapsed(
-                        hintText: 'Add comment',
-                        hintStyle: AppFonts.header.copyWith(
-                            color: Colors.white.withOpacity(0.5),
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal)),
+              Row(
+                children: [
+                  Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            image: NetworkImage(user.photoUrl),
+                            fit: BoxFit.cover)),
                   ),
-                ),
-                InkWell(
-                  onTap: () async {
-                    setState(() {
-                      _loading = true;
-                    });
-                    String res = await PostMethod().postComment(
-                        widget.snap["postId"].toString(),
-                        commentController.text,
-                        user.uid,
-                        user.username,
-                        user.photoUrl);
-                    if (res == 'success') {
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: TextFormField(
+                      controller: commentController,
+                      maxLines: 2,
+                      style: AppFonts.bodyBlack.copyWith(
+                          color: AppColors.primaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal),
+                      cursorColor: Colors.white,
+                      decoration: InputDecoration.collapsed(
+                          hintText: 'Add comment',
+                          hintStyle: AppFonts.header.copyWith(
+                              color: Colors.white.withOpacity(0.5),
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal)),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
                       setState(() {
-                        _loading = false;
+                        _loading = true;
                       });
-                    } else {
-                      setState(() {
-                        _loading = false;
-                      });
-                      showSnackBar(context, res);
-                    }
-                  },
-                  child: _loading
-                      ? Text(
-                          "Posting..",
-                          style:
-                              AppFonts.bodyBlack.copyWith(color: Colors.blue),
-                        )
-                      : Text(
-                          "Post",
-                          style:
-                              AppFonts.bodyBlack.copyWith(color: Colors.blue),
-                        ),
-                ),
-              ],
-            ),
-
-            Divider(),
-            // ListView.builder(itemBuilder: itemBuilder)
-            StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('posts')
-                    .doc(widget.snap["postId"])
-                    .collection("comments")
-                    .orderBy("datePublished", descending: true)
-                    .snapshots(),
-                builder: (context,
-                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                        snapshot) {
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: IndividualCommentWidget(
-                              snap: snapshot.data!.docs.elementAt(index).data(),
-                            ),
-                          );
+                      String res = await PostMethod().postComment(
+                          widget.snap["postId"].toString(),
+                          commentController.text,
+                          user.uid,
+                          user.username,
+                          user.photoUrl);
+                      if (res == 'success') {
+                        setState(() {
+                          _loading = false;
                         });
-                  }
-                  // if (snapshot.data!.docs.isEmpty) {
-                  //   Center(
-                  //     child: Text(
-                  //       "Be the first to comment 🫵 ",
-                  //       style: AppFonts.bodyBlack,
-                  //     ),
-                  //   );
-                  // }
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else
-                    return Text("Error loading comment");
-                }),
-          ],
+                      } else {
+                        setState(() {
+                          _loading = false;
+                        });
+                        showSnackBar(context, res);
+                      }
+                    },
+                    child: _loading
+                        ? Text(
+                            "Posting..",
+                            style:
+                                AppFonts.bodyBlack.copyWith(color: Colors.blue),
+                          )
+                        : Text(
+                            "Post",
+                            style:
+                                AppFonts.bodyBlack.copyWith(color: Colors.blue),
+                          ),
+                  ),
+                ],
+              ),
+
+              Divider(),
+              // ListView.builder(itemBuilder: itemBuilder)
+              StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('posts')
+                      .doc(widget.snap["postId"])
+                      .collection("comments")
+                      .orderBy("datePublished", descending: true)
+                      .snapshots(),
+                  builder: (context,
+                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                          snapshot) {
+                    if (snapshot.hasData) {
+                      return snapshot.data!.docs.isNotEmpty
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: IndividualCommentWidget(
+                                    snap: snapshot.data!.docs
+                                        .elementAt(index)
+                                        .data(),
+                                  ),
+                                );
+                              })
+                          : Center(
+                              child: Text(
+                                "Be the first to comment 🫵 ",
+                                style: AppFonts.bodyBlack,
+                              ),
+                            );
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else
+                      return Text("Error loading comment");
+                  }),
+            ],
+          ),
         ),
       ),
     );
