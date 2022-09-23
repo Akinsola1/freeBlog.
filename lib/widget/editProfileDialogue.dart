@@ -128,18 +128,22 @@ class _EditProfileDialogueState extends State<EditProfileDialogue> {
             Stack(
               children: [
                 _image != null
-                    ? CircleAvatar(
-                        radius: 64,
-                        backgroundImage: MemoryImage(_image!),
-                        backgroundColor: AppColors.secondaryColor,
-                      )
+                    ? Container(
+                          height: size.height / 3.8,
+                          width: size.width / 3,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: MemoryImage(
+                                      _image!))),
+                        )
                     : InkWell(
                         onTap: () {
                           selectImage;
                         },
                         child: Container(
-                          height: size.height / 4.8,
-                          width: size.width / 4,
+                          height: size.height / 3.8,
+                          width: size.width / 3,
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               image: DecorationImage(
@@ -148,7 +152,7 @@ class _EditProfileDialogueState extends State<EditProfileDialogue> {
                         ),
                       ),
                 Positioned(
-                  bottom: -10,
+                  bottom: 0,
                   left: 80,
                   child: IconButton(
                     onPressed: selectImage,
