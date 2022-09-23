@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:free_blog/resources/user.dart';
 import 'package:free_blog/style/appFonts.dart';
 import 'package:free_blog/widget/customForm.dart';
 import 'package:image_picker/image_picker.dart';
@@ -37,37 +38,31 @@ class _EditProfileDialogueState extends State<EditProfileDialogue> {
     setState(() {
       loading = true;
     });
-    final CollectionReference firestore =
-        FirebaseFirestore.instance.collection('users');
 
     try {
-      print("edit profile");
+      String res = await UserMethod().editProfile(
+          _image, widget.userData, nameController.text, bioController.text);
 
-      if (_image == null) {
-        firestore.doc(widget.userData["uid"]).update(
-            {"username": nameController.text, "bio": bioController.text});
+      if (res == "success") {
+        setState(() {
+          loading = false;
+        });
         Navigator.pop(context);
       } else {
-        String profImage = _image != null
-            ? await StorageMethod().uploadImage('profilePics', _image!, false)
-            : "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxAHBhMSEBIPDxUQEQ8QFRIODg8QEBAVFREYFhURFRYYHSggGRolHRUTITEiKCkrLi4uFx8zODMsNygtLi0BCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAOEA4QMBIgACEQEDEQH/xAAaAAEAAwEBAQAAAAAAAAAAAAAAAwQFAQIH/8QANBABAAEDAgIHBQgDAQAAAAAAAAECAxEEITFxEhNBUWGBsQUicpHwIzIzNFKhwdFC4fEk/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD6oAqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIrmopt8Z37o3kErkzFPGYjnLOvauqvh7seHH5q87yDYiuJ4TE8ph6Yr3TdqpjaqY85BrjNt6yqnj73Nds36b0bce6eIJQAAAAAAAAAAAAAAAAAAAAVdfd6NGI/y9AR6rVZ2pnnP9KYKAAAADtNU0zmNsOANTTXuuo8Y4/2mZWmudVeiezhLVQAAAAAAAAAAAAAAAAAAGXq6+nfnw2+X1LTmejGe7djcQAFAAAAAABrWKulZpnwhktXS/l6eSCUAAAAAAAAAAAAAAAAAEd/azV8M+jJa1/8Cr4Z9GSAAoAAAfX18gAAGno5/wDNHn6yzGnovy0efqgnAAAAAAAAAAAAAAAAABS196aZ6MbZic+PgoQu+0qfepnmp43AyZMGFDJEmDAOTwJnETydwYAmcGcGDAC5obs9Po9mJ8lPCz7Pj7flEg0gEAAAAAAAAAAAAAAAAFbX09Kxnun/AEzmxVTFdMxPbszdTY6iY3zE5BCAoAAAAAAL3s6n3ZnyVdPZ665jhtlp2rcWqMQg9gAAAAAAAAAAAAAAAAAINXb6yxPhunAYon1djqq8xwnh4eCBQAAAABJp7PXXMdnbILmgt9G1n9XpC05EYh1AAAAAAAAAAAAAAAAAAAABBrYzpp8vVmNLXVY08x349WaAAoAAND2fH2M/F/EM9f8AZ9X2cx45/ZBbAAAAAAAAAAAAAAAAAABFc1FNvjPlG8glVNZqJtziNsxnKO5rpn7sY8Z3lVqqmuczMzzAmZqnffm4CgAAAAROABc0moqquRTO+c79vBeYsT0Z225LVvW1U8fe/aUGgILeqouduPCrZOAAAAAAAAAAAPNdUUU5nhDOv6mq7PdHdH8gvXL9NvjMco3lWua79Mec/wBKYCS5fqucZnlwhGCgAAAAAAAAAAAA927tVvhMx6PAC3b10x96M8tlm3qaK+3HhOzLEG0MqzqKrU7bx3TwaVq5F2jMf88AewAAAAAUPaFzNcU9288/r1VEmpnOoq54+WyMABQAAAAAAAAAAAAAAAAAAWNFc6F7HZVt59iu7RPRrie6YkGyAgAAAAyL341XxT6vAKAAAAAAAAAAAAAAAAAAAAAANoBAAB//2Q==";
-
-        firestore.doc(widget.userData["uid"]).update({
-          "username": nameController.text,
-          "bio": bioController.text,
-          "profImage": profImage
+        showSnackBar(context, res);
+         setState(() {
+          loading = false;
         });
       }
     } catch (e) {
+      setState(() {
+        loading = false;
+      });
       showSnackBar(
         context,
         e.toString(),
       );
     }
-
-    setState(() {
-      loading = false;
-    });
   }
 
   @override
@@ -129,14 +124,13 @@ class _EditProfileDialogueState extends State<EditProfileDialogue> {
               children: [
                 _image != null
                     ? Container(
-                          height: size.height / 3.8,
-                          width: size.width / 3,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  image: MemoryImage(
-                                      _image!))),
-                        )
+                        height: size.height / 3.8,
+                        width: size.width / 3,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image:
+                                DecorationImage(image: MemoryImage(_image!))),
+                      )
                     : InkWell(
                         onTap: () {
                           selectImage;
