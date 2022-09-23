@@ -13,7 +13,7 @@ class PostMethod {
       String postId = const Uuid().v1(); // creates unique id based on time
       Post post = Post(
         uid: userId,
-        username: userName,
+        username: userName,  
         likes: [],
         postId: postId,
         datePublished: DateTime.now(),

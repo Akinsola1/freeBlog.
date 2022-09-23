@@ -104,9 +104,7 @@ class _PostWidgetState extends State<PostWidget> {
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 16),
                                       shrinkWrap: true,
-                                      children: [
-                                        'Delete',
-                                      ]
+                                      children: ['Delete', 'Edit']
                                           .map(
                                             (e) => InkWell(
                                                 child: Container(
@@ -126,7 +124,37 @@ class _PostWidgetState extends State<PostWidget> {
                           Icons.more_vert,
                           color: AppColors.primaryColor,
                         ))
-                    : Container()
+                    : IconButton(
+                        onPressed: () {
+                          showDialog(
+                              useRootNavigator: false,
+                              context: context,
+                              builder: (context) {
+                                return Dialog(
+                                  child: ListView(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 16),
+                                      shrinkWrap: true,
+                                      children: ['Report 👎',]
+                                          .map(
+                                            (e) => InkWell(
+                                                child: Container(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      vertical: 12,
+                                                      horizontal: 16),
+                                                  child: Text(e),
+                                                ),
+                                                onTap: () {}),
+                                          )
+                                          .toList()),
+                                );
+                              });
+                        },
+                        icon: Icon(
+                          Icons.more_vert,
+                          color: AppColors.primaryColor,
+                        ))
               ],
             ),
             const SizedBox(

@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:free_blog/resources/post.dart';
 import 'package:free_blog/style/appColors.dart';
 import 'package:free_blog/utils/screenDetector.dart';
+import 'package:free_blog/widget/editProfileDialogue.dart';
 import 'package:free_blog/widget/postWidget.dart';
 import 'package:shake/shake.dart';
 
@@ -63,7 +64,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       isFollowing = userSnap
           .data()!['followers']
           .contains(FirebaseAuth.instance.currentUser!.uid);
-
       setState(() {});
     } catch (e) {
       showSnackBar(
@@ -85,188 +85,208 @@ class _ProfileScreenState extends State<ProfileScreen> {
             color: AppColors.primaryColor,
           ))
         : Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: screenDetector.isMobile(context)
-                    ? size.width
-                    : size.width / 2,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-                  child: ListView(
-                    children: [
-                      Row(
-                        children: [
-                          InkWell(
-                              onTap: () => Navigator.pop(context),
-                              child: Icon(
-                                Icons.arrow_back,
-                                color: AppColors.primaryColor,
-                              ))
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        height: size.height / 4.8,
-                        width: size.width / 4,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: NetworkImage(userData["photoUrl"]),
-                            )),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Center(
-                        child: Text(
-                          userData["username"],
-                          style: AppFonts.bodyBlack.copyWith(fontSize: 18),
+            body: RefreshIndicator(
+              onRefresh: () async {
+                await getData();
+              },
+              child: Center(
+                child: SizedBox(
+                  width: screenDetector.isMobile(context)
+                      ? size.width
+                      : size.width / 2,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20, horizontal: 15),
+                    child: ListView(
+                      children: [
+                        Row(
+                          children: [
+                            InkWell(
+                                onTap: () => Navigator.pop(context),
+                                child: Icon(
+                                  Icons.arrow_back,
+                                  color: AppColors.primaryColor,
+                                ))
+                          ],
                         ),
-                      ),
-                      Center(
-                        child: Text(
-                          userData["email"],
-                          style: AppFonts.bodyBlack.copyWith(
-                              fontSize: 12, fontWeight: FontWeight.w200),
+                        const SizedBox(
+                          height: 20,
                         ),
-                      ),
-                      Center(
-                        child: Text(
-                          userData["bio"],
-                          style: AppFonts.bodyBlack.copyWith(
-                              fontSize: 12, fontWeight: FontWeight.w200),
+                        Container(
+                          height: size.height / 4.8,
+                          width: size.width / 4,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: NetworkImage(userData["photoUrl"]),
+                              )),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "$followers followers",
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Center(
+                          child: Text(
+                            userData["username"],
+                            style: AppFonts.bodyBlack.copyWith(fontSize: 18),
+                          ),
+                        ),
+                        const SizedBox(height: 10,),
+                        Center(
+                          child: Text(
+                            userData["email"],
                             style: AppFonts.bodyBlack.copyWith(
                                 fontSize: 12, fontWeight: FontWeight.w200),
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "$following following",
+                        ),
+                        const SizedBox(height: 10,),
+                        Center(
+                          child: Text(
+                            userData["bio"],
                             style: AppFonts.bodyBlack.copyWith(
                                 fontSize: 12, fontWeight: FontWeight.w200),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      FirebaseAuth.instance.currentUser!.uid == widget.uid
-                          ? Center(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: AppColors.primaryColor)),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 5, horizontal: 20),
-                                  child: Text(
-                                    "Edit Profile",
-                                    style: AppFonts.bodyBlack
-                                        .copyWith(fontWeight: FontWeight.w200),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "$followers followers",
+                              style: AppFonts.bodyBlack.copyWith(
+                                  fontSize: 12, fontWeight: FontWeight.w200),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "$following following",
+                              style: AppFonts.bodyBlack.copyWith(
+                                  fontSize: 12, fontWeight: FontWeight.w200),
+                            )
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        FirebaseAuth.instance.currentUser!.uid == widget.uid
+                            ? InkWell(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => EditProfileDialogue(
+                                      userData: userData,
+                                    ),
+                                  );
+                                },
+                                child: Center(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: AppColors.primaryColor)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 20),
+                                      child: Text(
+                                        "Edit Profile",
+                                        style: AppFonts.bodyBlack.copyWith(
+                                            fontWeight: FontWeight.w200),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            )
-                          : InkWell(
-                              onTap: isFollowing
-                                  ? () async {
-                                      await PostMethod().followUser(
-                                        FirebaseAuth.instance.currentUser!.uid,
-                                        userData['uid'],
-                                      );
-                                      setState(() {
-                                        isFollowing = false;
-                                        followers--;
-                                      });
-                                    }
-                                  : () async {
-                                      await PostMethod().followUser(
-                                        FirebaseAuth.instance.currentUser!.uid,
-                                        userData['uid'],
-                                      );
-                                      setState(() {
-                                        isFollowing = true;
-                                        followers++;
-                                      });
-                                    },
-                              child: Center(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: AppColors.primaryColor)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 5, horizontal: 20),
-                                    child: Text(
-                                      isFollowing ? "Following" : "Follow",
-                                      style: AppFonts.bodyBlack
-                                          .copyWith(fontWeight: FontWeight.w200),
+                              )
+                            : InkWell(
+                                onTap: isFollowing
+                                    ? () async {
+                                        await PostMethod().followUser(
+                                          FirebaseAuth
+                                              .instance.currentUser!.uid,
+                                          userData['uid'],
+                                        );
+                                        setState(() {
+                                          isFollowing = false;
+                                          followers--;
+                                        });
+                                      }
+                                    : () async {
+                                        await PostMethod().followUser(
+                                          FirebaseAuth
+                                              .instance.currentUser!.uid,
+                                          userData['uid'],
+                                        );
+                                        setState(() {
+                                          isFollowing = true;
+                                          followers++;
+                                        });
+                                      },
+                                child: Center(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: AppColors.primaryColor)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 20),
+                                      child: Text(
+                                        isFollowing ? "Following" : "Follow",
+                                        style: AppFonts.bodyBlack.copyWith(
+                                            fontWeight: FontWeight.w200),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                      // Divider(),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      const Text(
-                        "Posts",
-                        style: AppFonts.header,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                        // Divider(),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Text(
+                          "Posts",
+                          style: AppFonts.header,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
 
-                      FutureBuilder(
-                          future: FirebaseFirestore.instance
-                              .collection('posts')
-                              .where('uid', isEqualTo: widget.uid)
-                              .get(),
-                          builder: (context,
-                              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                                  snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                            if (snapshot.hasData) {
-                              return ListView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: snapshot.data!.docs.length,
-                                itemBuilder: (ctx, index) => PostWidget(
-                                  snap: snapshot.data!.docs[index].data(),
-                                ),
-                              );
-                            }
-                            if (snapshot.data!.docs.isEmpty) {
-                              return const Center(
-                                child: Text(
-                                  "Tell the world something",
-                                  style: AppFonts.bodyBlack,
-                                ),
-                              );
-                            } else
-                              return Text("Error loading content");
-                          })
-                    ],
+                        FutureBuilder(
+                            future: FirebaseFirestore.instance
+                                .collection('posts')
+                                .where('uid', isEqualTo: widget.uid)
+                                .get(),
+                            builder: (context,
+                                AsyncSnapshot<
+                                        QuerySnapshot<Map<String, dynamic>>>
+                                    snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              if (snapshot.hasData) {
+                                return ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: (ctx, index) => PostWidget(
+                                    snap: snapshot.data!.docs[index].data(),
+                                  ),
+                                );
+                              }
+                              if (snapshot.data!.docs.isEmpty) {
+                                return const Center(
+                                  child: Text(
+                                    "Tell the world something",
+                                    style: AppFonts.bodyBlack,
+                                  ),
+                                );
+                              } else
+                                return Text("Error loading content");
+                            })
+                      ],
+                    ),
                   ),
                 ),
               ),

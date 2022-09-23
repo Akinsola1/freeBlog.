@@ -1,7 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+
+import 'package:free_blog/models/userModel.dart' as model;
 import 'package:free_blog/resources/authMethod.dart';
 import 'package:free_blog/resources/post.dart';
 import 'package:free_blog/resources/provider.dart';
@@ -9,8 +13,6 @@ import 'package:free_blog/style/appColors.dart';
 import 'package:free_blog/style/appFonts.dart';
 import 'package:free_blog/utils/screenDetector.dart';
 import 'package:free_blog/widget/individualCommentWidget.dart';
-import 'package:provider/provider.dart';
-import 'package:free_blog/models/userModel.dart' as model;
 
 import '../utils/utils.dart';
 
@@ -46,12 +48,15 @@ class _CommentWidgetState extends State<CommentWidget> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Center(
+             const  Center(
                 child: Text(
                   "Comments",
                   style: AppFonts.bodyBlack,
                 ),
               ),
+              const SizedBox(
+                    height: 20,
+                  ),
               Row(
                 children: [
                   Container(
@@ -97,6 +102,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                       if (res == 'success') {
                         setState(() {
                           _loading = false;
+                          commentController.clear();
                         });
                       } else {
                         setState(() {
