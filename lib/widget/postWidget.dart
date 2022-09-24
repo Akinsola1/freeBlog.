@@ -84,7 +84,9 @@ class _PostWidgetState extends State<PostWidget> {
                       style: AppFonts.bodyBlack
                           .copyWith(fontSize: 14, fontWeight: FontWeight.w600),
                     ),
-                    const SizedBox(height: 5,),
+                    const SizedBox(
+                      height: 5,
+                    ),
                     Row(
                       children: [
                         Text(
@@ -92,11 +94,9 @@ class _PostWidgetState extends State<PostWidget> {
                                 .format(widget.snap['datePublished'].toDate()),
                             style: AppFonts.bodyBlack.copyWith(
                                 fontSize: 10, fontWeight: FontWeight.w300)),
-
-                                Text(
-                        " • ${widget.snap['name']}",
-                        style: AppFonts.bodyBlack.copyWith(
-                            fontSize: 10, fontWeight: FontWeight.w300))
+                        Text(" • ${widget.snap['name']}",
+                            style: AppFonts.bodyBlack.copyWith(
+                                fontSize: 10, fontWeight: FontWeight.w300))
                       ],
                     )
                   ],
@@ -145,7 +145,9 @@ class _PostWidgetState extends State<PostWidget> {
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 16),
                                       shrinkWrap: true,
-                                      children: ['Report 👎',]
+                                      children: [
+                                        'Report 👎',
+                                      ]
                                           .map(
                                             (e) => InkWell(
                                                 child: Container(
@@ -175,11 +177,6 @@ class _PostWidgetState extends State<PostWidget> {
               style: AppFonts.bodyBlack.copyWith(
                 fontSize: 16,
               ),
-            ),
-            Text(
-              "${widget.snap["postDescription"].toString()}",
-              style: AppFonts.bodyBlack
-                  .copyWith(fontSize: 14, fontWeight: FontWeight.w300),
             ),
             Text(
               "${widget.snap["postContent"].toString()}",

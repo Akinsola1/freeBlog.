@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _loading = true;
     });
     String res = await AuthMethod().loginUser(
-        email: _emailController.text, password: _passwordController.text);
+        email: _emailController.text.trim(), password: _passwordController.text.trim());
     if (res == 'success') {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(

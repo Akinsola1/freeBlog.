@@ -48,9 +48,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     // signup user using our authmethodds
     String res = await AuthMethod().signUpUser(
         name: _nameController.text,
-        email: _emailController.text,
-        password: _passwordController.text,
-        username: _usernameController.text,
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        username: _usernameController.text.trim(),
         bio: _bioController.text,
         file: _image);
     // if string returned is sucess, user has been created
