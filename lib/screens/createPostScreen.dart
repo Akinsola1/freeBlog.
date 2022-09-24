@@ -26,7 +26,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   var contentController = TextEditingController();
   bool loading = false;
 
-  void postContent(String uid, String username, String profImage) async {
+  void postContent(
+      String uid, String username, String profImage, String name) async {
     setState(() {
       loading = true;
     });
@@ -35,11 +36,11 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       // upload to storage and db
       String res = await PostMethod().uploadPost(
           titleController.text,
-          descriptionController.text,
           contentController.text,
           uid,
           username,
-          profImage);
+          profImage,
+          name);
       if (res == "success") {
         setState(() {
           loading = false;
@@ -82,7 +83,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               children: [
                 TextFormField(
                   controller: titleController,
-                  style: AppFonts.header.copyWith(color: AppColors.primaryColor),
+                  style:
+                      AppFonts.header.copyWith(color: AppColors.primaryColor),
                   cursorColor: Colors.white,
                   decoration: InputDecoration.collapsed(
                       hintText: 'Title',
@@ -92,25 +94,25 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                TextFormField(
-                  controller: descriptionController,
-                  maxLines: 2,
-                  maxLength: 100,
-                  style: AppFonts.header.copyWith(
-                      color: AppColors.primaryColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal),
-                  cursorColor: Colors.white,
-                  decoration: InputDecoration.collapsed(
-                      hintText: 'Short Description',
-                      hintStyle: AppFonts.header.copyWith(
-                          color: Colors.white.withOpacity(0.5),
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal)),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
+                // TextFormField(
+                //   controller: descriptionController,
+                //   maxLines: 2,
+                //   maxLength: 100,
+                //   style: AppFonts.header.copyWith(
+                //       color: AppColors.primaryColor,
+                //       fontSize: 16,
+                //       fontWeight: FontWeight.normal),
+                //   cursorColor: Colors.white,
+                //   decoration: InputDecoration.collapsed(
+                //       hintText: 'Short Description',
+                //       hintStyle: AppFonts.header.copyWith(
+                //           color: Colors.white.withOpacity(0.5),
+                //           fontSize: 16,
+                //           fontWeight: FontWeight.normal)),
+                // ),
+                // const SizedBox(
+                //   height: 20,
+                // ),
                 TextFormField(
                   controller: contentController,
                   maxLines: 20,
@@ -129,7 +131,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 CustomButton(
                     loading: loading,
                     onTap: () {
-                      postContent(user.uid, user.username, user.photoUrl);
+                      postContent(
+                          user.uid, user.username, user.photoUrl, user.name);
                     },
                     label: "Post"),
                 const SizedBox(

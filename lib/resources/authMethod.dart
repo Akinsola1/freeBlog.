@@ -22,6 +22,7 @@ class AuthMethod with ChangeNotifier {
 
   Future<String> signUpUser({
     required String email,
+    required String name,
     required String password,
     required String username,
     required String bio,
@@ -47,6 +48,7 @@ class AuthMethod with ChangeNotifier {
         print("image done");
 
         model.User _user = model.User(
+          name: name,
           username: username,
           uid: cred.user!.uid,
           photoUrl: photoUrl,

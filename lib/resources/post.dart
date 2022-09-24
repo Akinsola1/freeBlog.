@@ -6,20 +6,20 @@ import '../models/postModel.dart';
 class PostMethod {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<String> uploadPost(String postTitle, postDescription, postContent,
-      userId, userName, profileImage) async {
+  Future<String> uploadPost(String postTitle, postContent,
+      userId, userName, profileImage, name) async {
     String res = "Some error occurred";
     try {
       String postId = const Uuid().v1(); // creates unique id based on time
       Post post = Post(
         uid: userId,
+        name: name,
         username: userName,  
         likes: [],
         postId: postId,
         datePublished: DateTime.now(),
         profImage: profileImage,
         postContent: postContent,
-        postDescription: postDescription,
         postTitle: postTitle,
       );
       firestore.collection('posts').doc(postId).set(post.toJson());

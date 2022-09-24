@@ -22,6 +22,8 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final TextEditingController _nameController = TextEditingController();
+
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -45,6 +47,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     // signup user using our authmethodds
     String res = await AuthMethod().signUpUser(
+        name: _nameController.text,
         email: _emailController.text,
         password: _passwordController.text,
         username: _usernameController.text,
@@ -77,7 +80,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       body: Center(
         child: SizedBox(
-          width: screenDetector.isMobile(context) ? double.infinity : size.width / 2,
+          width: screenDetector.isMobile(context)
+              ? double.infinity
+              : size.width / 2,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: ListView(children: [
@@ -121,6 +126,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               CustomTextField(
                 hintText: "Name",
+                controller: _nameController,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              CustomTextField(
+                hintText: "Username",
                 controller: _usernameController,
               ),
               const SizedBox(

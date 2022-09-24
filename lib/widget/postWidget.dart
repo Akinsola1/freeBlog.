@@ -82,13 +82,23 @@ class _PostWidgetState extends State<PostWidget> {
                     Text(
                       "${widget.snap["username"].toString()}",
                       style: AppFonts.bodyBlack
-                          .copyWith(fontSize: 14, fontWeight: FontWeight.w300),
+                          .copyWith(fontSize: 14, fontWeight: FontWeight.w600),
                     ),
-                    Text(
-                        DateFormat.yMMMd()
-                            .format(widget.snap['datePublished'].toDate()),
+                    const SizedBox(height: 5,),
+                    Row(
+                      children: [
+                        Text(
+                            DateFormat.yMMMd()
+                                .format(widget.snap['datePublished'].toDate()),
+                            style: AppFonts.bodyBlack.copyWith(
+                                fontSize: 10, fontWeight: FontWeight.w300)),
+
+                                Text(
+                        " • ${widget.snap['name']}",
                         style: AppFonts.bodyBlack.copyWith(
                             fontSize: 10, fontWeight: FontWeight.w300))
+                      ],
+                    )
                   ],
                 ),
                 Spacer(),

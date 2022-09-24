@@ -41,7 +41,7 @@ class _EditProfileDialogueState extends State<EditProfileDialogue> {
 
     try {
       String res = await UserMethod().editProfile(
-          _image, widget.userData, nameController.text, bioController.text);
+          _image, widget.userData, nameController.text.trim(), bioController.text);
 
       if (res == "success") {
         setState(() {
