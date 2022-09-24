@@ -10,6 +10,7 @@ import 'package:free_blog/widget/customButton.dart';
 import 'package:free_blog/widget/customForm.dart';
 
 import '../utils/utils.dart';
+import '../utils/validator.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,13 +22,16 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final loginKey = GlobalKey<FormState>();
+
   bool _loading = false;
   void loginUser() async {
     setState(() {
       _loading = true;
     });
     String res = await AuthMethod().loginUser(
-        email: _emailController.text.trim(), password: _passwordController.text.trim());
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim());
     if (res == 'success') {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
@@ -50,53 +54,61 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Center(
-        child: SizedBox(
-          width: screenDetector.isMobile(context) ? size.width : size.width / 2,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            child: ListView(children: [
-              const Center(
-                child: Text(
-                  "freeBlog.",
-                  style: AppFonts.header,
+      body: Form(
+        key: loginKey,
+        child: Center(
+          child: SizedBox(
+            width: screenDetector.isMobile(context) ? size.width : size.width / 2,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: ListView(children: [
+                const Center(
+                  child: Text(
+                    "freeBlog.",
+                    style: AppFonts.header,
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              CustomTextField(
-                controller: _emailController,
-                hintText: "Email",
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              CustomTextField(
-                controller: _passwordController,
-                hintText: "Password",
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              CustomButton(
-                  loading: _loading,
-                  onTap: () {
-                    loginUser();
-                  },
-                  label: "Login"),
-              const SizedBox(
-                height: 10,
-              ),
-              Center(
-                child: InkWell(
+                const SizedBox(
+                  height: 10,
+                ),
+                CustomTextField(
+                  controller: _emailController,
+                  hintText: "Email",
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) => Validators().validateEmail(value!),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                CustomTextField(
+                  controller: _passwordController,
+                  hintText: "Password",
+                  obscureText: true,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                CustomButton(
+                    loading: _loading,
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const SignUpScreen()));
+                      if (!loginKey.currentState!.validate()) return;
+
+                      loginUser();
                     },
-                    child: const Text("New to freeBlog.? SignUp")),
-              )
-            ]),
+                    label: "Login"),
+                const SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const SignUpScreen()));
+                      },
+                      child: const Text("New to freeBlog.? SignUp")),
+                )
+              ]),
+            ),
           ),
         ),
       ),

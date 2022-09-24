@@ -230,7 +230,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 5, horizontal: 20),
                                       child: Text(
-                                        isFollowing ? "Following" : "Follow",
+                                        isFollowing ? "Unfollow" : "Follow",
                                         style: AppFonts.bodyBlack.copyWith(
                                             fontWeight: FontWeight.w200),
                                       ),

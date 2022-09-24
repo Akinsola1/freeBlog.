@@ -38,7 +38,7 @@ class IndividualCommentWidget extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  "${snap["username"]} • ",
+                  "${snap["username"]}•",
                   style: AppFonts.bodyBlack
                       .copyWith(fontSize: 14, fontWeight: FontWeight.w600),
                 ),

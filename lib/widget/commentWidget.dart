@@ -154,12 +154,15 @@ class _CommentWidgetState extends State<CommentWidget> {
                                   ),
                                 );
                               })
-                          : Center(
-                              child: Text(
-                                "Be the first to comment 🫵 ",
-                                style: AppFonts.bodyBlack,
+                          : Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Center(
+                                child: Text(
+                                  "Be the first to comment 🫵 ",
+                                  style: AppFonts.bodyBlack,
+                                ),
                               ),
-                            );
+                          );
                     }
 
                     if (snapshot.connectionState == ConnectionState.waiting) {
