@@ -30,6 +30,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   bool _loading = false;
+  bool _loading1 = false;
+
   Uint8List? _image;
   final signUpKey = GlobalKey<FormState>();
 
@@ -75,6 +77,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
+  void googleSignIn() async {
+    setState(() {
+      _loading1 = true;
+    });
+
+    bool res = await AuthMethod().signInWithGoogle(context);
+
+    if (res) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+          ),
+          (route) => false);
+    }
+    setState(() {
+      _loading1 = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -97,8 +118,70 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 30,
                 ),
+                InkWell(
+                  onTap: () {
+                    googleSignIn();
+                  },
+                  child: Container(
+                    height: 58,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.transparent,
+                        border: Border.all(color: Color(0xff36474f))),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: _loading1
+                          ? Center(child: CircularProgressIndicator())
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  "assets/images/googleLogo.png",
+                                  height: 40,
+                                  width: 40,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                const Text(
+                                  "Continue with google",
+                                  style: AppFonts.bodyWhite,
+                                )
+                              ],
+                            ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20,),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 1,
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        "OR",
+                        style: AppFonts.bodyWhite
+                            .copyWith(fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        height: 1,
+                        color: AppColors.primaryColor,
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 20,),
                 Center(
                   child: Stack(
                     children: [

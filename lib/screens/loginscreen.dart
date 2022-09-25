@@ -9,6 +9,7 @@ import 'package:free_blog/utils/screenDetector.dart';
 import 'package:free_blog/widget/customButton.dart';
 import 'package:free_blog/widget/customForm.dart';
 
+import '../style/appColors.dart';
 import '../utils/utils.dart';
 import '../utils/validator.dart';
 
@@ -25,6 +26,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final loginKey = GlobalKey<FormState>();
 
   bool _loading = false;
+  bool _loading1 = false;
+
   void loginUser() async {
     setState(() {
       _loading = true;
@@ -50,6 +53,26 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void googleSignIn() async {
+    setState(() {
+      _loading1 = true;
+    });
+
+    bool res = await AuthMethod().signInWithGoogle(context);
+
+    if (res) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+          ),
+          (route) => false);
+
+      setState(() {
+        _loading1 = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -58,7 +81,8 @@ class _LoginScreenState extends State<LoginScreen> {
         key: loginKey,
         child: Center(
           child: SizedBox(
-            width: screenDetector.isMobile(context) ? size.width : size.width / 2,
+            width:
+                screenDetector.isMobile(context) ? size.width : size.width / 2,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: ListView(children: [
@@ -99,6 +123,72 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 10,
                 ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 1,
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        "OR",
+                        style: AppFonts.bodyWhite
+                            .copyWith(fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        height: 1,
+                        color: AppColors.primaryColor,
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 20,),
+                InkWell(
+                  onTap: () {
+                    googleSignIn();
+                  },
+                  child: Container(
+                    height: 58,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.transparent,
+                        border: Border.all(color: Color(0xff36474f))),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: _loading1
+                          ? Center(child: CircularProgressIndicator())
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  "assets/images/googleLogo.png",
+                                  height: 40,
+                                  width: 40,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                const Text(
+                                  "Continue with google",
+                                  style: AppFonts.bodyWhite,
+                                )
+                              ],
+                            ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20,),
+
+            
                 Center(
                   child: InkWell(
                       onTap: () {
